@@ -27,7 +27,7 @@ def vk_group(group_id):
     data_check2 = check2.json()
     if (check.status_code == 404):
         return "Группа не найдена!"
-    elif (data_check2['response']['type'] != "group"):
+    elif (data_check2['response']['type'] != "group" and data_check2['response']['type'] != "page"):
         return "Данный id не является группой!"
     else:
         method = "https://api.vk.com/method/groups.getById"
