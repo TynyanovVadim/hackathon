@@ -1,8 +1,14 @@
 import PySimpleGUI as sg
 import json
+import asyncio
+
+from post_module import get_adresses
+from vk_module import get_by_id
+from telegram_module import get_messages, search
+
 def Save(data):
-    with open('data.json', 'w') as f:
-        json.dump(data, f)
+    with open('data.json', 'w', encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False)
 
 def Mail():
     sg.theme('DarkAmber')
@@ -21,15 +27,19 @@ def Mail():
             break
         if event == 'Ok':
             window.close()
-            output(values) # #коммент ниже
+            lat = values[0]
+            lon = values[1]
+            radius = values[2] if values[2] != 0 else 100
+            output(get_adresses(lat, lon, radius))
 
 def TG():
     sg.theme('DarkAmber')
 
     layout_TG = [ [sg.Text('Заполните поля')],
-               [sg.Text('Введите IP-адрес группы          '), sg.InputText()],
-               [sg.Text('Введите IP-адрес пользователя'), sg.InputText()],
-               [sg.Button('Ok'), sg.Button('Exit')] ]
+               [sg.Text('Введите ID группы          '), sg.InputText()],
+               [sg.Text('Введите ID пользователя    '), sg.InputText()],
+               [sg.Text('Введите ключевое слово     '), sg.InputText()],
+               [sg.Button('Search'), sg.Button("History"), sg.Button('Exit')] ]
 
     window = sg.Window('Modul 2', layout_TG)
 
@@ -37,15 +47,18 @@ def TG():
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Exit':
             break
-        if event == 'Ok':
+        if event == 'History':
             window.close()
-            output(values) # В значении должн быть указан конечный итог. Output только печатает исходник
+            output(asyncio.run(get_messages(values[0])))
+        if event == 'Search':
+            window.close()
+            output(asyncio.run(search(values[0], values[2], values[1])))
 
 def VK():
     sg.theme('DarkAmber')
 
     layout_TG = [ [sg.Text('Заполните поля')],
-               [sg.Text('Введите IP-адрес'), sg.InputText()],
+               [sg.Text('Введите ID'), sg.InputText()],
                [sg.Button('Ok'), sg.Button('Exit')] ]
 
     window = sg.Window('Modul 2', layout_TG)
@@ -56,7 +69,7 @@ def VK():
             break
         if event == 'Ok':
             window.close()
-            output(values) #коммент выше
+            output(get_by_id(values[0]))
 
 def output(text):
     sg.theme('DarkAmber')
