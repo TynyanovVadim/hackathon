@@ -49,10 +49,16 @@ def TG():
             break
         if event == 'History':
             window.close()
-            output(asyncio.run(get_messages(values[0])))
+            try:
+                output(asyncio.run(get_messages(values[0])))
+            except:
+                output("ID не найден")
         if event == 'Search':
             window.close()
-            output(asyncio.run(search(values[0], values[2], values[1])))
+            try:
+                output(asyncio.run(search(values[0], values[2], values[1])))
+            except:
+                output("ID не найден")
 
 def VK():
     sg.theme('DarkAmber')
