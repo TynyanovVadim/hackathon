@@ -81,7 +81,7 @@ def output(text):
     sg.theme('DarkAmber')
 
     layout = [ [sg.Text('Вывод')],
-            [sg.Text(text)],
+            [sg.Multiline(text, size=(100, 15))],
             [sg.Button('Save'), sg.Button('Exit')] ]
 
     window = sg.Window('Кейс 5', layout, size=(700, 500))
