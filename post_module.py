@@ -11,7 +11,8 @@ def get_adresses(lat, lon, radius):
     post = requests.get(api_geo_post, headers=headers, params=params)
     adresses = requests.get(api_adresses, params=params, headers=headers)
 
-    if (not post.ok and not adresses.ok):
+    if (not post.ok and not adresses.ok) or \
+       (not post.json()["suggestions"] and not adresses.json()["suggestions"]):
         return {}, {}
 
     if (not post.json()["suggestions"]):
